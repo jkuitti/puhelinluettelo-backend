@@ -14,6 +14,22 @@ morgan.token('body', (req, res) => {
     }
 })
 
+const mongoose = require('mongoose')
+
+const url =
+  `mongodb+srv://jkuitti:mongodb@cluster0.iwv9txw.mongodb.net/phonebookApp?retryWrites=true&w=majority`
+
+mongoose.set('strictQuery', false)
+
+mongoose.connect(url)
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+})
+
+const Person = mongoose.model('Person', personSchema)
+
 
 let persons = [
     {
@@ -43,7 +59,9 @@ app.get('/', (req, res) => {
   })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(person => {
+        response.json(person)
+    })
 })
 
 app.get('/info', (request, response) => {
